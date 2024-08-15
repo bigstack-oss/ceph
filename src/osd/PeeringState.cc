@@ -930,6 +930,11 @@ static pair<epoch_t, epoch_t> get_required_past_interval_bounds(
 
 void PeeringState::check_past_interval_bounds() const
 {
+  // See: https://tracker.ceph.com/issues/64002
+  if (cct->_conf.get_val<bool>("osd_skip_check_past_interval_bounds")) {
+    return;
+  }
+
   auto oldest_epoch = pl->oldest_stored_osdmap();
   auto rpib = get_required_past_interval_bounds(
     info,
